@@ -23,7 +23,7 @@ async def homepage(request: Request):
 
 @app.post("/generate")
 async def upload_image(request: Request, image: UploadFile = File(...)):
-    if not image.filename.endswith(".jpg") and not image.filename.endswith(".jpeg"):
+    if not image.filename.endswith(".jpg") and not image.filename.endswith(".jpeg") and not image.filename.endswith(".png"):
         raise HTTPException(400, "Invalid image format. Only JPG/JPEG is accepted.")
     image_parts = [
         {"mime_type": "image/jpeg", "data": image.file.read()},
