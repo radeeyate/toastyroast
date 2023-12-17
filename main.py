@@ -76,6 +76,8 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                 overallReason = line[1]
             elif line.startswith("Improvement Tips: "):
                 line = line.split(": ")
+                if len(line) == 1:
+                    improvementTips = "None"
                 improvementTips = line[1]
 
     roast = coll.insert_one(
@@ -126,4 +128,4 @@ async def roast(request: Request, roastID: str):
 
 @app.get("/faq")
 async def faq(request: Request):
-    return templates.TemplateResponse("faq.html", {"request": request})
+    return templates.TemplateResponse("faq.html", {"request": request })
