@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, HTTPException, Request, File, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.exceptions import HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
@@ -14,6 +15,25 @@ from bson import ObjectId
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Made-With"] = f"<3 from radi8"
+    return response
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
+
+@app.exception_handler(500)
+async def error_exception_handler(request: Request, exc: HTTPException):
+    return templates.TemplateResponse("error.html", {"request": request}, status_code=500)
 
 
 @app.get("/", response_class=HTMLResponse)
