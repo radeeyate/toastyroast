@@ -37,6 +37,7 @@ model = genai.GenerativeModel(
 )
 
 prompt = """
+If you do not see a face or body in this picture, stop now and reply "No face found"
 Hey Gemini, let\'s RoastyToast this pic!
 Analyze the image: Tell me everything you see. Clothes, vibes, background, what\'s going on?
 Rate their Rizz: Is it on fire, lukewarm, or non-existent? Give me a number (1-10) and explain why.

@@ -79,7 +79,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
             elif line.startswith("Improvement Tips: "):
                 line = line.split(": ")
                 if len(line) == 1:
-                    improvementTips = "None"
+                    improvementTips = "Nothing"
                 improvementTips = line[1]
 
     roast = coll.insert_one(
