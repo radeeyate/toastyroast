@@ -82,8 +82,8 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                     if len(line) == 1:
                         improvementTips = "Nothing"
                     improvementTips = line[1]
-        except:
-            return templates.TemplateResponse("error.html", {"request": request})
+    except:
+        return templates.TemplateResponse("error.html", {"request": request})
 
     roast = coll.insert_one(
         {
