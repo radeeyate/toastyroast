@@ -35,52 +35,55 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
     response = model.generate_content(prompt_parts)
     print(response.prompt_feedback)
     if "block_reason" in response.prompt_feedback:
-        return templates.TemplateResponse("error.html", {"request": request})
+        return templates.TemplateResponse("inappropriate.html", {"request": request})
     if "no face found" in response.text.lower():
         return templates.TemplateResponse("noface.html", {"request": request})
     print(response.text)
-    for line in response.text.splitlines():
-        if not line == "":
-            line = line.strip()
-            if line.startswith("Clothes: "):
-                line = line.split(": ")
-                clothesRating = line[1].split("/10. ")[0]
-                clothesReason = line[1].split("/10. ")[1]
-            elif line.startswith("Vibes: "):
-                line = line.split(": ")
-                vibeRating = line[1].split("/10. ")[0]
-                vibeReason = line[1].split("/10. ")[1]
-            elif line.startswith("Background: "):
-                line = line.split(": ")
-                bgRating = line[1].split("/10. ")[0]
-                bgReason = line[1].split("/10. ")[1]
-            elif line.startswith("Rizz: "):
-                line = line.split(": ")
-                rizzRating = line[1].split("/10. ")[0]
-                rizzReason = line[1].split("/10. ")[1]
-            elif line.startswith("Style: "):
-                line = line.split(": ")
-                styleRating = line[1].split("/10. ")[0]
-                styleReason = line[1].split("/10. ")[1]
-            elif line.startswith("Humor check: "):
-                line = line.split(": ")
-                humorRating = line[1].split("/10. ")[0]
-                humorReason = line[1].split("/10. ")[1]
-            elif line.startswith("Caption: "):
-                line = line.split(": ")
-                caption = line[1]
-            elif line.startswith("Bonus points: "):
-                line = line.split(": ")
-                bonusPoints = line[1].split("/3. ")[0]
-                bonusPointsReason = line[1].split("/3. ")[1]
-            elif line.startswith("Overall: "):
-                line = line.split(": ")
-                overallReason = line[1]
-            elif line.startswith("Improvement Tips: "):
-                line = line.split(": ")
-                if len(line) == 1:
-                    improvementTips = "Nothing"
-                improvementTips = line[1]
+    try:
+        for line in response.text.splitlines():
+            if not line == "":
+                line = line.strip()
+                if line.startswith("Clothes: "):
+                    line = line.split(": ")
+                    clothesRating = line[1].split("/10. ")[0]
+                    clothesReason = line[1].split("/10. ")[1]
+                elif line.startswith("Vibes: "):
+                    line = line.split(": ")
+                    vibeRating = line[1].split("/10. ")[0]
+                    vibeReason = line[1].split("/10. ")[1]
+                elif line.startswith("Background: "):
+                    line = line.split(": ")
+                    bgRating = line[1].split("/10. ")[0]
+                    bgReason = line[1].split("/10. ")[1]
+                elif line.startswith("Rizz: "):
+                    line = line.split(": ")
+                    rizzRating = line[1].split("/10. ")[0]
+                    rizzReason = line[1].split("/10. ")[1]
+                elif line.startswith("Style: "):
+                    line = line.split(": ")
+                    styleRating = line[1].split("/10. ")[0]
+                    styleReason = line[1].split("/10. ")[1]
+                elif line.startswith("Humor check: "):
+                    line = line.split(": ")
+                    humorRating = line[1].split("/10. ")[0]
+                    humorReason = line[1].split("/10. ")[1]
+                elif line.startswith("Caption: "):
+                    line = line.split(": ")
+                    caption = line[1]
+                elif line.startswith("Bonus points: "):
+                    line = line.split(": ")
+                    bonusPoints = line[1].split("/3. ")[0]
+                    bonusPointsReason = line[1].split("/3. ")[1]
+                elif line.startswith("Overall: "):
+                    line = line.split(": ")
+                    overallReason = line[1]
+                elif line.startswith("Improvement Tips: "):
+                    line = line.split(": ")
+                    if len(line) == 1:
+                        improvementTips = "Nothing"
+                    improvementTips = line[1]
+        except:
+            return templates.TemplateResponse("error.html", {"request": request})
 
     roast = coll.insert_one(
         {
