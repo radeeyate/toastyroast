@@ -45,6 +45,7 @@ Humor check: Do they seem chill and relatable, or do they radiate awkwardness? U
 Bonus points: Surprise me with a witty or unexpected roast that ties everything together. Go for the burn!
 **Remember, I want this roast to be hilarious, personalized, and relevant to the image. Be creative, Gemini, and show me your roasting skills!
 Additional Notes:
+If you do not see a human in the image, please reply with only this text: "No face found" in exactly that casing, and nothing else. Just those three words.
 Please do not use pronous such as "she", "her", "he", "him", etc. Refer directly to the person saying pronouns like "you."
 Please do not use terms like "boy," "girl," "man," or "woman," to avoid misgendering the person.
 Please return a response in this format:

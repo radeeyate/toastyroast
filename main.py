@@ -36,6 +36,8 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
     print(response.prompt_feedback)
     if "block_reason" in response.prompt_feedback:
         return templates.TemplateResponse("error.html", {"request": request})
+    if "no face found" in response.text.lower():
+        return templates.TemplateResponse("noface.html", {"request": request})
     print(response.text)
     for line in response.text.splitlines():
         if not line == "":
