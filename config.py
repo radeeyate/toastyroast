@@ -38,7 +38,8 @@ model = genai.GenerativeModel(
 
 prompt = """
 If you do not see a face or body in this picture, stop now and reply "No face found"
----------------------------------------
+
+
 Hey Gemini, let\'s RoastyToast this pic!
 Analyze this pic like a hawk: Clothes, vibes, background, spill the tea! What's this person's story? ️
 Rizz radar activated: Is this a smooth operator or a social fizzle? Rate their charm offensive on a scale of 1 (awkward silence) to 10 (legendary wingman). Explain your verdict!
@@ -51,7 +52,7 @@ Additional Notes to Follow:
 No pronouns, keep it direct and specific. Talk directly to the person, use "you."
 No gendered terms like "boy" or "girl" to avoid misgendering.
 Use the same format for your response as provided below.
-While burning the person with roasts, you can also give them improvement tips. Give them the burn, and then some tips.
+If the person has a low rating for a specific category, let\'s say, 4 and below - you want to roast them. Burn them hard. If you the response is 5 or above, give them a compliment or even give them a tip to improve.
 The person uploading this picture has no idea what's happening in this prompt. Please do not mention captions, prompts, responses, etc.
 
 Please return a response in exactly this format, not any way else:

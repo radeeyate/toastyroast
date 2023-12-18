@@ -17,6 +17,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     response = await call_next(request)
@@ -32,9 +33,12 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time"] = str(process_time)
     return response
 
+
 @app.exception_handler(500)
 async def error_exception_handler(request: Request, exc: HTTPException):
-    return templates.TemplateResponse("error.html", {"request": request}, status_code=500)
+    return templates.TemplateResponse(
+        "error.html", {"request": request}, status_code=500
+    )
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -44,7 +48,11 @@ async def homepage(request: Request):
 
 @app.post("/generate")
 async def upload_image(request: Request, image: UploadFile = File(...)):
-    if not image.filename.endswith(".jpg") and not image.filename.endswith(".jpeg") and not image.filename.endswith(".png"):
+    if (
+        not image.filename.endswith(".jpg")
+        and not image.filename.endswith(".jpeg")
+        and not image.filename.endswith(".png")
+    ):
         raise HTTPException(400, "Invalid image format. Only JPG/JPEG is accepted.")
     image_parts = [
         {"mime_type": "image/jpeg", "data": image.file.read()},
@@ -104,7 +112,8 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                         improvementTips = "Nothing"
                     improvementTips = line[1]
     except:
-        return templates.TemplateResponse("error.html", {"request": request})
+        dbRoast = coll.insert_one({"full-text": response.text})
+        return RedirectResponse(f"/roast/{dbRoast.inserted_id}", status_code=302)
 
     roast = coll.insert_one(
         {
@@ -146,12 +155,24 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
 async def roast(request: Request, roastID: str):
     dbRoast = coll.find_one({"_id": ObjectId(roastID)})
     if dbRoast:
-        return templates.TemplateResponse(
-            "rating.html", {"request": request, "roast": dbRoast}
-        )
+        if "full-text" in dbRoast:
+            newline = "\n"
+            full_text = "<p>" + dbRoast["full-text"].replace("\n", "</p><p>") + "</p>"
+            return templates.TemplateResponse(
+                "rawres.html",
+                {
+                    "request": request,
+                    "full_text": full_text,
+                },
+            )
+        else:
+            return templates.TemplateResponse(
+                "rating.html", {"request": request, "roast": dbRoast}
+            )
     else:
         return templates.TemplateResponse("notfound.html", {"request": request})
 
+
 @app.get("/faq")
 async def faq(request: Request):
-    return templates.TemplateResponse("faq.html", {"request": request })
+    return templates.TemplateResponse("faq.html", {"request": request})
