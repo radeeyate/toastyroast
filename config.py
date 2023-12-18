@@ -11,7 +11,7 @@ db = client["toastyroast"]
 coll = db["roasts"]
 
 generation_config = {
-    "temperature": 0.70,
+    "temperature": 0.85,
     "top_p": 1,
     "top_k": 32,
     "max_output_tokens": 4096,
@@ -37,32 +37,39 @@ model = genai.GenerativeModel(
 )
 
 prompt = """
-If you do not see a face or body in this picture, stop now and reply "No face found"
+In front of you, is an image. If it does not contain a human face, please return "Face not found" and stop.
+If it does contain a face or a human body, we want to roast it. We have some categories we want to roast/rate it on.
+The ratings must be numeric, and not floats or "N/A". Categories rated as "N/A" will be denied and not accepted.
 
+These are the we want to rated and roasted of the following:
 
-Hey Gemini, let\'s RoastyToast this pic!
-Analyze this pic like a hawk: Clothes, vibes, background, spill the tea! What's this person's story? ️
-Rizz radar activated: Is this a smooth operator or a social fizzle? Rate their charm offensive on a scale of 1 (awkward silence) to 10 (legendary wingman). Explain your verdict!
-Style roast time! Are they a fashion icon or a walking meme factory? Be ruthless but hilarious. Don't hold back!
-Humor check, engage! Do they ooze chill vibes or radiate awkward penguin energy? Use current trends and memes to roast their humor game. Bonus points for epic references!
-Bonus round, unleash the fire! Surprise me with a witty, unexpected roast that ties everything together. Think ultimate burn!
-I want this roast to be hilarious, personalized, and relevant to the image. Be creative, Gemini, and show me your roasting skills!
+* Rizz: scale of 1 (awkward silence) to 10 (legendary wingman)
+* Clothes: scale of 1 (thrift store chic) to 10 (red capted ready)
+* Vibes: scale of 1 (awkward silence) to 10 (very energetic and exciting)
+* Background: scale of 1 (ugly, boring, unhappy background) to 10 (beautiful landscape, vibrant scenery)
+* Style: scale of 1 (questionable fashion choices) to 10 (trendsetter)
+* Humor: scale of 1 (crickets) to 10 (everyone is laughing)
 
-Additional Notes to Follow:
+I have some guidelines for the ratings and reasons:
 No pronouns, keep it direct and specific. Talk directly to the person, use "you."
 No gendered terms like "boy" or "girl" to avoid misgendering.
 Use the same format for your response as provided below.
-If the person has a low rating for a specific category, let\'s say, 4 and below - you want to roast them. Burn them hard. If you the response is 5 or above, give them a compliment or even give them a tip to improve.
+If the person has a low rating for a specific category, (4 and below), roast them, burn them hard. If you the response is 5 or above, give a compliment or tip to improve.
 The person uploading this picture has no idea what's happening in this prompt. Please do not mention captions, prompts, responses, etc.
-N/A is not an answer. If you provide N/A, it will be marked as 0 and will not display the real value. You can always judge rizz from a picture, and denying so will result in an inaccurate rating.
-Please return a response in exactly this format, not any way else. Remember, do NOT rate \"N/A"\":
+N/A is not an answer. If you provide N/A, it is not a valid answer. You can always judge by the image, do not be afraid.
+Be ruthless but hilarious. Don't hold back!
+Surprise me with a witty, unexpected roast that ties everything together. Think ultimate burn!
+Do not provide short reasons. We want content.
+"N/A" is not a rating, because nobody is saying N/A/10. That doesn't make sense. Always provide a numerical rating.
+
+This is the exact format I want your response in, and only use this format:
 
 Clothes: <rating>/10. <explanation here>.
 Vibes: <rating>/10. <explanation here>.
 Background: <rating>/10. <explanation here>.
-Rizz: <rating. do **NOT** say \"N/A\".>/10. <explanation here>.
+Rizz: <rating>/10. <explanation here>.
 Style: <rating>/10. <explanation here>.
-Humor check: <rating>/10. <explanation here>.
+Humor: <rating>/10. <explanation here>.
 Caption: <caption to describe image>
 Bonus points: <bonus points (max is 3)>/3. <reason for bonus points.>
 Overall: <your overall thoughts. do NOT provide a rating, as I will sum them up.>

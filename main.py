@@ -96,7 +96,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                     line = line.split(": ")
                     styleRating = line[1].split("/10. ")[0]
                     styleReason = line[1].split("/10. ")[1]
-                elif line.startswith("Humor check: "):
+                elif line.startswith("Humor: "):
                     line = line.split(": ")
                     humorRating = line[1].split("/10. ")[0]
                     humorReason = line[1].split("/10. ")[1]
