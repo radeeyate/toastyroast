@@ -124,12 +124,12 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
             "overallRating": round(
                 mean(
                     [
-                        int(rizzRating),
-                        int(clothesRating),
-                        int(vibeRating),
-                        int(bgRating),
-                        int(styleRating),
-                        int(humorRating),
+                        int(round(float(rizzRating))),
+                        int(round(float(clothesRating))),
+                        int(round(float(vibeRating))),
+                        int(round(float(bgRating))),
+                        int(round(float(styleRating))),
+                        int(round(float(humorRating))),
                     ]
                 )
             )
