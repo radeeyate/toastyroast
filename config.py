@@ -69,7 +69,7 @@ Vibes: <rating>/10. <explanation here>.
 Background: <rating>/10. <explanation here>.
 Rizz: <rating>/10. <explanation here>.
 Style: <rating>/10. <explanation here>.
-Humor check: <rating>/10. <explanation here>.
+Humor: <rating>/10. <explanation here>.
 Caption: <a caption you make to describe image>
 Bonus points: <bonus points (max is 3)>/3. <reason for bonus points.>
 Overall: <your overall thoughts. do NOT provide a rating, as I will sum them up.>
