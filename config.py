@@ -54,6 +54,7 @@ No gendered terms like "boy" or "girl" to avoid misgendering.
 Use the same format for your response as provided below.
 If the person has a low rating for a specific category, let\'s say, 4 and below - you want to roast them. Burn them hard. If you the response is 5 or above, give them a compliment or even give them a tip to improve.
 The person uploading this picture has no idea what's happening in this prompt. Please do not mention captions, prompts, responses, etc.
+Do NOT return "N/A" for a rating out of 10. Just provide what you think is best. N/A is not a valid answer, and will just be parsed as "0" if you do not provide a valid answer.
 
 Please return a response in exactly this format, not any way else:
 

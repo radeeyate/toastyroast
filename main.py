@@ -86,7 +86,10 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                     bgReason = line[1].split("/10. ")[1]
                 elif line.startswith("Rizz: "):
                     line = line.split(": ")
-                    rizzRating = line[1].split("/10. ")[0]
+                    if "N/A" in line[1]:
+                        rizzRating = "0"
+                    else:
+                        rizzRating = line[1].split("/10. ")[0]
                     rizzReason = line[1].split("/10. ")[1]
                 elif line.startswith("Style: "):
                     line = line.split(": ")
