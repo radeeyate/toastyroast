@@ -54,14 +54,13 @@ No gendered terms like "boy" or "girl" to avoid misgendering.
 Use the same format for your response as provided below.
 If the person has a low rating for a specific category, let\'s say, 4 and below - you want to roast them. Burn them hard. If you the response is 5 or above, give them a compliment or even give them a tip to improve.
 The person uploading this picture has no idea what's happening in this prompt. Please do not mention captions, prompts, responses, etc.
-Do NOT return "N/A" for a rating out of 10. Just provide what you think is best. N/A is not a valid answer, and will just be parsed as "0" if you do not provide a valid answer.
-
-Please return a response in exactly this format, not any way else:
+N/A is not an answer. If you provide N/A, it will be marked as 0 and will not display the real value. You can always judge rizz from a picture, and denying so will result in an inaccurate rating.
+Please return a response in exactly this format, not any way else. Remember, do NOT rate \"N/A"\":
 
 Clothes: <rating>/10. <explanation here>.
 Vibes: <rating>/10. <explanation here>.
 Background: <rating>/10. <explanation here>.
-Rizz: <rating>/10. <explanation here>.
+Rizz: <rating. do **NOT** say \"N/A\".>/10. <explanation here>.
 Style: <rating>/10. <explanation here>.
 Humor check: <rating>/10. <explanation here>.
 Caption: <caption to describe image>
