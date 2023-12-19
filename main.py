@@ -67,7 +67,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
     ):
         raise HTTPException(400, "Invalid image format. Only JPG/JPEG is accepted.")
     compressedImage = BytesIO()
-    Image.open(BytesIO(image.file.read())).convert("RGB").save(
+    Image.open(BytesIO(image.file.read())).save( # add back .convert("RGB") later
         compressedImage, format="JPEG", quality=85
     )
     compressedImage.seek(0)
