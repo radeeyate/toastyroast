@@ -15,7 +15,6 @@ from io import BytesIO
 from PIL import Image
 
 
-
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
@@ -48,9 +47,11 @@ async def error_exception_handler(request: Request, exc: HTTPException):
 async def homepage(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+
 @app.get("/updates")
 async def updates(request: Request):
     return templates.TemplateResponse("updates.html", {"request": request})
+
 
 @app.get("/faq")
 async def faq(request: Request):
@@ -66,7 +67,9 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
     ):
         raise HTTPException(400, "Invalid image format. Only JPG/JPEG is accepted.")
     compressedImage = BytesIO()
-    Image.open(BytesIO(image.file.read())).save(compressedImage, format="JPEG", quality=85)
+    Image.open(BytesIO(image.file.read())).convert("RGB").save(
+        compressedImage, format="JPEG", quality=85
+    )
     compressedImage.seek(0)
     image_parts = [
         {"mime_type": "image/jpeg", "data": compressedImage.read()},
@@ -76,8 +79,8 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
         image_parts[0],
     ]
     response = model.generate_content(prompt_parts)
-    del(image) # to ensure file data does not remain in memory
-    del(compressedImage)
+    del image  # to ensure file data does not remain in memory
+    del compressedImage
     print(response.prompt_feedback)
     if "block_reason" in response.prompt_feedback:
         return templates.TemplateResponse("inappropriate.html", {"request": request})
@@ -162,7 +165,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                     else:
                         humorRating = line[1].split("/10. ")[0]
                         humorReason = line[1].split("/10. ")[1]
-                #elif line.startswith("Caption: "):
+                # elif line.startswith("Caption: "):
                 #    line = line.split(": ")
                 #    caption = line[1]
                 elif line.startswith("Bonus points: "):
@@ -193,11 +196,13 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
                 mean(
                     [
                         int(round(float(rizzRating))) if rizzRating.isdigit() else 0,
-                        int(round(float(clothesRating))) if clothesRating.isdigit() else 0,
+                        int(round(float(clothesRating)))
+                        if clothesRating.isdigit()
+                        else 0,
                         int(round(float(vibeRating))) if vibeRating.isdigit() else 0,
                         int(round(float(bgRating))) if bgRating.isdigit() else 0,
                         int(round(float(styleRating))) if styleRating.isdigit() else 0,
-                        int(round(float(humorRating))) if  humorRating.isdigit() else 0,
+                        int(round(float(humorRating))) if humorRating.isdigit() else 0,
                     ]
                 )
             )
