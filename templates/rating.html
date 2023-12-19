@@ -36,7 +36,7 @@
         <div class="max-w-lg">
             <details class="rounded-lg p-6 open:bg-white open:shadow-lg open:ring-1 open:ring-black/5">
                 <summary class="select-none text-sm font-semibold leading-6 text-slate-900">Rizz - <span
-                        class="text-orange-500">{{ roast["rizzRating"] }}/10</span></summary>
+                        class="text-orange-500">{{ roast["rizzRating"] }}{% if not roast["rizzRating"] == "N/A" %}/10{% else %}{% endif %}</span></summary>
                 <div class="mt-3 text-sm leading-6 text-slate-600">
                     <p>{{ roast["rizzReason"] }}</p>
                 </div>
@@ -45,7 +45,7 @@
         <div class="max-w-lg ">
             <details class="rounded-lg p-6 open:bg-white open:shadow-lg open:ring-1 open:ring-black/5">
                 <summary class="select-none text-sm font-semibold leading-6 text-slate-900">Clothes - <span
-                        class="text-orange-500">{{ roast["clothesRating"] }}/10</span></summary>
+                        class="text-orange-500">{{ roast["clothesRating"] }}{% if not roast["clothesRating"] == "N/A" %}/10{% else %}{% endif %}</span></summary>
                 <div class="mt-3 text-sm leading-6 text-slate-600">
                     <p>{{ roast["clothesReason"] }}</p>
                 </div>
@@ -54,7 +54,7 @@
         <div class="max-w-lg ">
             <details class="rounded-lg p-6 open:bg-white open:shadow-lg open:ring-1 open:ring-black/5">
                 <summary class="select-none text-sm font-semibold leading-6 text-slate-900">Vibe - <span
-                        class="text-orange-500">{{ roast["vibeRating"] }}/10</span></summary>
+                        class="text-orange-500">{{ roast["vibeRating"] }}{% if not roast["vibeRating"] == "N/A" %}/10{% else %}{% endif %}</span></summary>
                 <div class="mt-3 text-sm leading-6 text-slate-600">
                     <p>{{ roast["vibeReason"] }}</p>
                 </div>
@@ -63,7 +63,7 @@
         <div class="max-w-lg ">
             <details class="rounded-lg p-6 open:bg-white open:shadow-lg open:ring-1 open:ring-black/5">
                 <summary class="select-none text-sm font-semibold leading-6 text-slate-900">Background - <span
-                        class="text-orange-500">{{ roast["bgRating"] }}/10</span></summary>
+                        class="text-orange-500">{{ roast["bgRating"] }}{% if not roast["bgRating"] == "N/A" %}/10{% else %}{% endif %}</span></summary>
                 <div class="mt-3 text-sm leading-6 text-slate-600">
                     <p>{{ roast["bgReason"] }}</p>
                 </div>
@@ -72,7 +72,7 @@
         <div class="max-w-lg ">
             <details class="rounded-lg p-6 open:bg-white open:shadow-lg open:ring-1 open:ring-black/5">
                 <summary class="select-none text-sm font-semibold leading-6 text-slate-900">Style - <span
-                        class="text-orange-500">{{ roast["styleRating"] }}/10</span></summary>
+                        class="text-orange-500">{{ roast["styleRating"] }}{% if not roast["styleRating"] == "N/A" %}/10{% else %}{% endif %}</span></summary>
                 <div class="mt-3 text-sm leading-6 text-slate-600">
                     <p>{{ roast["styleReason"] }}</p>
                 </div>
@@ -81,7 +81,7 @@
         <div class="max-w-lg ">
             <details class="rounded-lg p-6 open:bg-white open:shadow-lg open:ring-1 open:ring-black/5">
                 <summary class="select-none text-sm font-semibold leading-6 text-slate-900">Humor - <span
-                        class="text-orange-500">{{ roast["humorRating"] }}/10</span></summary>
+                        class="text-orange-500">{{ roast["humorRating"] }}{% if not roast["humorRating"] == "N/A" %}/10{% else %}{% endif %}</span></summary>
                 <div class="mt-3 text-sm leading-6 text-slate-600">
                     <p>{{ roast["humorReason"] }}</p>
                 </div>
