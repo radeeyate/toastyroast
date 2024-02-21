@@ -45,6 +45,8 @@ async def error_exception_handler(request: Request, exc: HTTPException):
 
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
+    if "ref" in request.query_params and request.query_params["ref"] == "taaft":
+        return RedirectResponse("https://www.youtube.com/watch?v=dQw4w9WgXcQ", status_code=302)
     return templates.TemplateResponse("index.html", {"request": request})
 
 
