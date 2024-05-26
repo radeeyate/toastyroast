@@ -13,6 +13,7 @@ from bson import ObjectId
 import time
 from io import BytesIO
 from PIL import Image
+import ast
 
 
 app = FastAPI()
@@ -46,7 +47,9 @@ async def error_exception_handler(request: Request, exc: HTTPException):
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
     if "ref" in request.query_params and request.query_params["ref"] == "taaft":
-        return RedirectResponse("https://www.youtube.com/watch?v=dQw4w9WgXcQ", status_code=302)
+        return RedirectResponse(
+            "https://www.youtube.com/watch?v=dQw4w9WgXcQ", status_code=302
+        )
     return templates.TemplateResponse("index.html", {"request": request})
 
 
@@ -67,154 +70,66 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
         and not image.filename.endswith(".jpeg")
         and not image.filename.endswith(".png")
     ):
-        raise HTTPException(400, "Invalid image format. Only JPG/JPEG is accepted.")
+        raise HTTPException(400, "Invalid image format. Only JPG/JPEG/PNG is accepted.")
     compressedImage = BytesIO()
-    Image.open(BytesIO(image.file.read())).convert("RGB").save(compressedImage, format="JPEG", quality=85
+    Image.open(BytesIO(image.file.read())).convert("RGB").save(
+        compressedImage, format="JPEG", quality=85
     )
     compressedImage.seek(0)
     image_parts = [
         {"mime_type": "image/jpeg", "data": compressedImage.read()},
     ]
     prompt_parts = [
-        prompt,
+        "Rate this image",
         image_parts[0],
     ]
     response = model.generate_content(prompt_parts)
-    del image  # to ensure file data does not remain in memory
+    responseJSON = ast.literal_eval(response.text)
+
+    del image  # to ensure file data does not remain in memory / protect privacy
     del compressedImage
-    print(response.prompt_feedback)
-    if "block_reason" in response.prompt_feedback:
+
+    if response.prompt_feedback.block_reason:
         return templates.TemplateResponse("inappropriate.html", {"request": request})
-    if "no face found" in response.text.lower():
+    if "error" in responseJSON and responseJSON["error"] == "not face":
         return templates.TemplateResponse("noface.html", {"request": request})
-    print(response.text)
-    try:
-        for line in response.text.splitlines():
-            if not line == "":
-                line = line.strip()
-                line = line.replace("N/A/10", "N/A")
-                if line.startswith("Clothes: "):
-                    line = line.split(": ")
-                    if "N/A" in line[1]:
-                        line[1] = line[1].replace("/10", "")
-                        clothesRating = "N/A"
-                        if len(line[1].split("N/A.")) > 1:
-                            clothesReason = line[1].split("N/A. ")[1]
-                        else:
-                            clothesReason = "Unspecified"
-                    else:
-                        clothesRating = line[1].split("/10. ")[0]
-                        clothesReason = line[1].split("/10. ")[1]
-                elif line.startswith("Vibes: "):
-                    line = line.split(": ")
-                    if "N/A" in line[1]:
-                        line[1] = line[1].replace("/10", "")
-                        vibeRating = "N/A"
-                        if len(line[1].split("N/A.")) > 1:
-                            vibeReason = line[1].split("N/A. ")[1]
-                        else:
-                            vibeReason = "Unspecified"
-                    else:
-                        vibeRating = line[1].split("/10. ")[0]
-                        vibeReason = line[1].split("/10. ")[1]
-                elif line.startswith("Background: "):
-                    line = line.split(": ")
-                    if "N/A" in line[1]:
-                        line[1] = line[1].replace("/10", "")
-                        bgRating = "N/A"
-                        if len(line[1].split("N/A.")) > 1:
-                            bgReason = line[1].split("N/A. ")[1]
-                        else:
-                            bgReason = "Unspecified"
-                    else:
-                        bgRating = line[1].split("/10. ")[0]
-                        bgReason = line[1].split("/10. ")[1]
-                elif line.startswith("Rizz: "):
-                    line = line.split(": ")
-                    if "N/A" in line[1]:
-                        line[1] = line[1].replace("/10", "")
-                        rizzRating = "N/A"
-                        if len(line[1].split("N/A.")) > 1:
-                            rizzReason = line[1].split("N/A. ")[1]
-                        else:
-                            rizzReason = "Unspecified"
-                    else:
-                        rizzRating = line[1].split("/10. ")[0]
-                        rizzReason = line[1].split("/10. ")[1]
-                elif line.startswith("Style: "):
-                    line = line.split(": ")
-                    if "N/A" in line[1]:
-                        line[1] = line[1].replace("/10", "")
-                        styleRating = "N/A"
-                        print(line)
-                        if len(line[1].split("N/A.")) > 1:
-                            styleReason = line[1].split("N/A. ")[1]
-                        else:
-                            styleReason = "Unspecified"
-                    else:
-                        styleRating = line[1].split("/10. ")[0]
-                        styleReason = line[1].split("/10. ")[1]
-                elif line.startswith("Humor: "):
-                    line = line.split(": ")
-                    if "N/A" in line[1]:
-                        line[1] = line[1].replace("/10", "")
-                        humorRating = "N/A"
-                        if len(line[1].split("N/A.")) > 1:
-                            humorReason = line[1].split("N/A. ")[1]
-                        else:
-                            humorReason = "Unspecified"
-                    else:
-                        humorRating = line[1].split("/10. ")[0]
-                        humorReason = line[1].split("/10. ")[1]
-                # elif line.startswith("Caption: "):
-                #    line = line.split(": ")
-                #    caption = line[1]
-                elif line.startswith("Bonus points: "):
-                    line = line.split(": ")
-                    line[1] = line[1].replace("N/A", "0")
-                    if "0/3" in line[1] or "0" in line[1]:
-                        bonusPoints = "0"
-                        bonusPointsReason = "You got no bonus points"
-                    else:
-                        bonusPoints = line[1].split("/3. ")[0]
-                        bonusPointsReason = line[1].split("/3. ")[1]
-                elif line.startswith("Overall: "):
-                    line = line.split(": ")
-                    overallReason = line[1]
-                elif line.startswith("Improvement Tips: "):
-                    line = line.split(": ")
-                    if len(line) == 1:
-                        improvementTips = "Nothing"
-                    improvementTips = line[1]
-                print(line)
-    except:
-        dbRoast = coll.insert_one({"full-text": response.text})
-        return RedirectResponse(f"/roast/{dbRoast.inserted_id}", status_code=302)
+
+    clothesRating, clothesReason = responseJSON["clothes"].values()
+    vibesRating, vibesReason = responseJSON["vibes"].values()
+    bgRating, bgReason = responseJSON["background"].values()
+    rizzRating, rizzReason = responseJSON["rizz"].values()
+    styleRating, styleReason = responseJSON["style"].values()
+    humorRating, humorReason = responseJSON["humor"].values()
+    bonusPoints, bonusPointsReason = responseJSON["bonus"].values()
+    overallReason = responseJSON["overall"]
+    tips = responseJSON["tips"]
+
+    overallPoints = (
+        round(
+            mean(
+                [
+                    clothesRating,
+                    vibesRating,
+                    bgRating,
+                    rizzRating,
+                    styleRating,
+                    humorRating,
+                ]
+            )
+        )
+        + int(bonusPoints)
+    )
 
     roast = coll.insert_one(
         {
-            "overallRating": round(
-                mean(
-                    [
-                        int(round(float(rizzRating))) if rizzRating.isdigit() else 0,
-                        int(round(float(clothesRating)))
-                        if clothesRating.isdigit()
-                        else 0,
-                        int(round(float(vibeRating))) if vibeRating.isdigit() else 0,
-                        int(round(float(bgRating))) if bgRating.isdigit() else 0,
-                        int(round(float(styleRating))) if styleRating.isdigit() else 0,
-                        int(round(float(humorRating))) if humorRating.isdigit() else 0,
-                    ]
-                )
-            )
-            + int(bonusPoints),
+            "overallRating": overallPoints,
             "overall": overallReason,
             "rizzRating": rizzRating,
             "rizzReason": rizzReason,
             "clothesRating": clothesRating,
             "clothesReason": clothesReason,
-            "vibeRating": vibeRating,
-            "vibeReason": vibeReason,
+            "vibeRating": vibesRating,
+            "vibeReason": vibesReason,
             "bgRating": bgRating,
             "bgReason": bgReason,
             "styleRating": styleRating,
@@ -223,7 +138,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
             "humorReason": humorReason,
             "bonusPoints": bonusPoints,
             "bonusPointsReason": bonusPointsReason,
-            "improvementTips": improvementTips,
+            "improvementTips": tips,
         }
     )
     return RedirectResponse(f"/roast/{roast.inserted_id}", status_code=302)

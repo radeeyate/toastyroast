@@ -15,6 +15,7 @@ generation_config = {
     "top_p": 1,
     "top_k": 32,
     "max_output_tokens": 4096,
+    "response_mime_type": "application/json",
 }
 
 safety_settings = [
@@ -30,14 +31,13 @@ safety_settings = [
     },
 ]
 
-model = genai.GenerativeModel(
-    model_name="gemini-pro-vision",
-    generation_config=generation_config,
-    safety_settings=safety_settings,
-)
+systemPrompt = """
+In front of you, is an image. If it does not contain a human face, please return this JSON Schema and stop:
 
-prompt = """
-In front of you, is an image. If it does not contain a human face, please return "Face not found" and stop.
+{
+    "error": "not face:
+}
+
 If it does contain a face or a human body, we want to roast it. We have some categories we want to roast/rate it on.
 The ratings must be numeric, and not floats or "N/A". Categories rated as "N/A" will be denied and not accepted.
 
@@ -62,16 +62,46 @@ Roast every category with a juicy number (not a floating point, or your submissi
 If a category isn't readily apparent, get creative! You must have a number to judge with, so ensure you are creative.
 Use your best judgment and explain your reasoning with a dash of humor.
 
-This is the exact format I want your response in, and only use this format:
+Return your response in this JSON Schema:
 
-Clothes: <rating>/10. <explanation here>.
-Vibes: <rating>/10. <explanation here>.
-Background: <rating>/10. <explanation here>.
-Rizz: <rating>/10. <explanation here>.
-Style: <rating>/10. <explanation here>.
-Humor: <rating>/10. <explanation here>.
-Caption: <a caption you make to describe image>
-Bonus points: <bonus points (max is 3)>/3. <reason for bonus points.>
-Overall: <your overall thoughts. do NOT provide a rating, as I will sum them up.>
-Improvement Tips: <tips they can use to improve. provide them on the same line, and do not point them on a new line.>
+{
+  "clothes": {
+    "rating": <rating>, # integer, out of ten
+    "explanation": "<explanation here>" # string
+  },
+  "vibes": {
+    "rating": <rating>, # integer, out of ten
+    "explanation": "<explanation here>" # string
+  },
+  "background": {
+    "rating": <rating>, # integer, out of ten
+    "explanation": "<explanation here>" # string
+  },
+  "rizz": {
+    "rating": <rating>, # integer, out of ten
+    "explanation": "<explanation here>" # string
+  },
+  "style": {
+    "rating": <rating>, # integer, out of ten
+    "explanation": "<explanation here>" # string
+  },
+  "humor": {
+    "rating": <rating>, # integer, out of ten
+    "explanation": "<explanation here>" # string
+  },
+  "bonus": {
+    "points": <bonus points>, # integer, out of three
+    "reason": "<reason for bonus points>" # string
+  },
+  "overall": "<your overall thoughts>", # string
+  "tips": "<tips they can use to improve. provide them on the same line, and do not point them on a new line.>" # string
+}
+
 """
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-pro-latest",
+    generation_config=generation_config,
+    safety_settings=safety_settings,
+    system_instruction=systemPrompt,
+)
