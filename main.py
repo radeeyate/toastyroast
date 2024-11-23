@@ -50,6 +50,7 @@ async def homepage(request: Request):
         return RedirectResponse(
             "https://www.youtube.com/watch?v=dQw4w9WgXcQ", status_code=302
         )
+
     return templates.TemplateResponse("index.html", {"request": request})
 
 
@@ -71,6 +72,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
         and not image.filename.endswith(".png")
     ):
         raise HTTPException(400, "Invalid image format. Only JPG/JPEG/PNG is accepted.")
+
     compressedImage = BytesIO()
     Image.open(BytesIO(image.file.read())).convert("RGB").save(
         compressedImage, format="JPEG", quality=85
@@ -85,7 +87,7 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
     ]
     response = model.generate_content(prompt_parts)
     responseJSON = ast.literal_eval(response.text)
-
+    
     del image  # to ensure file data does not remain in memory / protect privacy
     del compressedImage
 
@@ -94,31 +96,28 @@ async def upload_image(request: Request, image: UploadFile = File(...)):
     if "error" in responseJSON and responseJSON["error"] == "not face":
         return templates.TemplateResponse("noface.html", {"request": request})
 
-    clothesRating, clothesReason = responseJSON["clothes"].values()
-    vibesRating, vibesReason = responseJSON["vibes"].values()
-    bgRating, bgReason = responseJSON["background"].values()
-    rizzRating, rizzReason = responseJSON["rizz"].values()
-    styleRating, styleReason = responseJSON["style"].values()
-    humorRating, humorReason = responseJSON["humor"].values()
+    clothesReason, clothesRating = responseJSON["clothes"].values()
+    vibesReason, vibesRating = responseJSON["vibes"].values()
+    bgReason, bgRating = responseJSON["background"].values()
+    rizzReason, rizzRating = responseJSON["rizz"].values()
+    styleReason, styleRating = responseJSON["style"].values()
+    humorReason, humorRating = responseJSON["humor"].values()
     bonusPoints, bonusPointsReason = responseJSON["bonus"].values()
     overallReason = responseJSON["overall"]
     tips = responseJSON["tips"]
 
-    overallPoints = (
-        round(
-            mean(
-                [
-                    clothesRating,
-                    vibesRating,
-                    bgRating,
-                    rizzRating,
-                    styleRating,
-                    humorRating,
-                ]
-            )
+    overallPoints = round(
+        mean(
+            [
+                clothesRating,
+                vibesRating,
+                bgRating,
+                rizzRating,
+                styleRating,
+                humorRating,
+            ]
         )
-        + int(bonusPoints)
-    )
+    ) + int(bonusPoints)
 
     roast = coll.insert_one(
         {

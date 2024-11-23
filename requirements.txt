@@ -3,3 +3,6 @@ pymongo
 python-dotenv
 uvicorn
 google-generativeai
+pillow
+jinja2
+python-multipart
