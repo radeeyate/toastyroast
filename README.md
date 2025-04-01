@@ -1,6 +1,6 @@
 # ToastyRoast
 
-ToastyRoast is a website powered by Google Gemini 1.5 Flash that rates/roasts you on several factors.
+ToastyRoast is a website powered by Google Gemini 2.0 Flash that rates/roasts you on several factors.
 
 ![Screenshot of ToastyRoast](./media/Screenshot%202024-11-23%20at%2014-37-52%20ToastyRoast%20-%20Get%20roasted%20by%20AI!.png)
 
