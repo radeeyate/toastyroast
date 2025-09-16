@@ -218,7 +218,7 @@ Here is an example of a good response, though do not copy from it as it will not
 """
 
 model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash",
+    model_name="gemini-2.5-flash",
     generation_config=generation_config,
     safety_settings=safety_settings,
     system_instruction=systemPrompt,
